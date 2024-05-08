@@ -172,7 +172,7 @@ Textareas eignen sich für grössere Fliesstexte, wie eine Beschreibung oder ein
   * `reset`: Setzt alle Eingabefelder innerhalb eines Formulars zurück
   * `button`: Ist generisch, und hat an sich keine spezielle Funktion (wird oft in Verbindung mit JavaScript genutzt)
 * Default `type` innerhalb eines `<form>`-Elements ist `submit`
-* Default `type` ausserhalb eines `<form>`-Elements ist `button`
+* Default `type` ausserhalb eines `<form>`-Elements ist ebenfalls `submit` (macht dann aber nichts)
 * Es ist **good practice** immer einen `type` anzugeben, auch wenn dieser implizit ist
 
 **Beispiele**
