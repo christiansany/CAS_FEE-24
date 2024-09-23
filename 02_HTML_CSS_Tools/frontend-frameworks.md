@@ -18,15 +18,21 @@ Frontend-Frameworks sind ein **Werkzeugkasten**, der in der Regel aus einer Ansa
 
 ### Vorteile
 
-* **Rapid Prototyping** &rightarrow; Viele Frameworks bieten vorgefertigte Komponenten an, die schnell einsatzbereit sind.
-* **Browser-Support** &rightarrow; Die Browser-Unterstützung ist in der Regel sehr gut, da bereits andere Entwickler die Kompatibilität berücksichtigt haben.
-* **Community** &rightarrow; Die meisten Frameworks verfügen über eine eigene Community, die bei Problemen konsultiert werden kann.
+* **Rapid Prototyping**  
+  Viele Frameworks bieten vorgefertigte Komponenten an, die schnell einsatzbereit sind.
+* **Browser-Support**  
+  Die Browser-Unterstützung ist in der Regel sehr gut, da bereits andere Entwickler die Kompatibilität berücksichtigt haben.
+* **Community**  
+  Die meisten Frameworks verfügen über eine eigene Community, die bei Problemen konsultiert werden kann.
 
 ### Nachteile
 
-* **Code Bloat** &rightarrow; In der Regel muss mehr Code importiert werden, als tatsächlich genutzt wird.
-* **Architecture** &rightarrow; Oft sind CSS-Selektoren und zum Beispiel JS-Libraries vorgegeben und müssen genutzt werden.
-* **Lernkurve** &rightarrow; Aufgrund der hohen Komplexität erfordert das Erlernen des Frameworks oft eine beträchtlich viel Zeit.
+* **Code Bloat**  
+  In der Regel muss mehr Code importiert werden, als tatsächlich genutzt wird.
+* **Architecture**  
+  Oft sind CSS-Selektoren und zum Beispiel JS-Libraries vorgegeben und müssen genutzt werden.
+* **Lernkurve**  
+  Aufgrund der hohen Komplexität erfordert das Erlernen des Frameworks oft eine beträchtlich viel Zeit.
 
 ## Bekannte Frameworks
 
@@ -51,14 +57,14 @@ Tailwind UI: [tailwindui.com](https://tailwindui.com/)
 * [Semantic UI](http://semantic-ui.com/)
 * etc.
 
-## Angular & React spezifische Frameworks
+## Angular & React spezifische Frameworks & Component Libraries
 
 ### Material UI for React
 
 ![Material UI for React Homepage](./assets/react-material.png)
 
-Website: https://material-ui.com/  
-Getting Started: https://material-ui.com/getting-started/installation/
+Website: https://mui.com/
+Getting Started: https://mui.com/material-ui/getting-started/installation/
 
 ### Angular Material
 
@@ -70,6 +76,7 @@ Getting started: https://material.angular.io/guide/getting-started
 **Weitere Frontend-Frameworks**
 
 React
+* [Shadcn UI](https://ui.shadcn.com/)
 * [Headless UI](https://headlessui.dev/)
 * [React Bootstrap](https://react-bootstrap.github.io/)
 * [Semantic UI](https://react.semantic-ui.com/)
@@ -78,8 +85,9 @@ React
 * etc.
 
 Angular
-* [Prime NG](https://www.primefaces.org/primeng/#/)
-* [NG Bootstrap](https://ng-bootstrap.github.io/#/home)
+* [Shadcn UI for Angular](https://www.spartan.ng/)
+* [Prime NG](https://primeng.org/)
+* [NG Bootstrap](https://ng-bootstrap.github.io/)
 * [Onsen UI](https://onsen.io/angular2/)
 * etc.
 
@@ -100,7 +108,7 @@ Angular
 
 Learning by doing
 
-- [ ] Überlegt anhand der Kriterien, ob ihr ein Framework in eurem Projekt nutzen wollt
+- [ ] Überlegt anhand der Kriterien, ob ihr ein Framework in eurem Projekt nutzen wollt (wird empfohlen)
   - [ ] Falls ja, folgt dem Getting started guide um es in euer Projekt einzubinden
 
 Zeit: ~ ♾️ min
