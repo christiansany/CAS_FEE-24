@@ -10,14 +10,14 @@
 
 ### Was ist ein Bundler?
 
-Bundler konzentrieren sich auf das Bündeln und Optimieren des Codes der Applikation. Sie helfen dabei, verschiedene Module und Dateien zu verwalten und zusammenzuführen, wodurch Funktionen wie Code-Splitting, Tree Shaking und Lazy Loading ermöglicht werden. Dies ist besonders nützlich in der modernen Webentwicklung, wo Anwendungen oft aus zahlreichen Modulen oder Komponenten bestehen, die in separaten Dateien geschrieben sind. Bundler analysieren die Abhängigkeiten zwischen diesen Modulen und generieren optimierte Bündel, die von Browsern effizient geladen werden können.
+Bundler konzentrieren sich auf das Bündeln und Optimieren des Codes der Applikation. Sie helfen dabei, verschiedene Module und Dateien zu verwalten und zusammenzuführen, wodurch Funktionen wie Code-Splitting, Tree Shaking und Lazy Loading ermöglicht werden. Dies ist besonders nützlich in der modernen Webentwicklung, in der Anwendungen oft aus zahlreichen Modulen oder Komponenten bestehen, die in separaten Dateien geschrieben sind. Bundler analysieren die Abhängigkeiten zwischen diesen Modulen und generieren optimierte Bündel, die von Browsern effizient geladen werden können.
 
 Bis heute ist der am weitesten verbreitete Bundler: [Webpack](https://webpack.js.org/). Neuere Bundler wie [Vite](https://vitejs.dev/) oder [Turbopack](https://turbo.build/pack) sind aber auf dem Vormarsch. Vite wird dabei schon sehr häufig eingesetzt und viele Entwickler sind von der Performance begeistert.
 
 ### Webpack
 
-> At its core, webpack is a static module bundler for modern JavaScript applications. When webpack processes your application, it internally builds a dependency graph from one or more entry points and then combines every module your project needs into one or more bundles, which are static assets to serve your content from.  
-> [Source: Webpack](https://webpack.js.org/concepts/)
+> Webpack is a bundler for modules. The main purpose is to bundle JavaScript files for usage in a browser, yet it is also capable of transforming, bundling, or packaging just about any resource or asset.  
+> [Source: Webpack](https://www.npmjs.com/package/webpack#introduction)
 
 #### Quickstart
 
@@ -26,7 +26,7 @@ Bis heute ist der am weitesten verbreitete Bundler: [Webpack](https://webpack.js
 _Ihr müsste diesem Guide nicht folgen, da ich bereits ein Repository vorbereitet habe. Ihr könnt direkt das [**Webpack Demo**](https://github.com/christiansany/webpack-demo/tree/main) klonen._
 
 Damit wir Webpack nutzen können, müssen wir `webpack` und `webpack-cli` lokal installieren.
-Mit Webpack version 5.0 muss keine Konfigurationsdatei angegeben werden.
+Mit Webpack version 5 muss keine Konfigurationsdatei angegeben werden.
 
 ```sh
 mkdir webpack-demo
@@ -144,7 +144,7 @@ module.exports = {
 > **Das Wichtigste in Kürze**
 >  
 > * Wenn ein bestimmter Dateityp von Webpack unterstützt werden soll, muss der entsprechende Loader installiert und konfiguriert werden.
-> * Bei der Einrichtung von Projekten mit Angular CLI oder `create-next-app` muss die Webpack-Konfiguration in der Regel nicht manuell erstellt werden.
+> * Bei der Einrichtung von Projekten mit Angular CLI oder `create-next-app` muss die Webpack-Konfiguration nicht manuell erstellt werden.
 
 **Weitere Bundler**
 
@@ -244,6 +244,7 @@ Es ermöglicht die Verwendung der neuesten ECMAScript-Standards und "übersetzt"
 
 Website: https://babeljs.io/  
 Loader: https://webpack.js.org/loaders/babel-loader/
+Example: [Babel Playground](https://babeljs.io/repl#?browsers=ie%2011&build=&builtIns=false&corejs=3.21&spec=false&loose=false&code_lz=MYewdgzgLgBAhjAvDA3gKBjAZiEAuGAIgCM4AnQgGgxgAsBTAG0fyIHcQzGATKtAXwDcaNKEixiSVDQB0cuNSEixEEI3oyWAcwAUKGHJmT-ASmFA&debug=false&forceAllTransforms=false&modules=false&shippedProposals=false&evaluate=false&fileSize=false&timeTravel=false&sourceType=module&lineWrap=false&presets=env&prettier=false&targets=&version=7.25.6&externalPlugins=&assumptions=%7B%7D)
 
 **Hilfreiche Links**
 
@@ -259,7 +260,7 @@ _Die Zeit reicht nicht aus um alles umzusetzen. Wähle das, was Dich am meisten 
 - [ ] Aktiviere den `style-loader` & `css-loader` in der Webpack-Konfiguration und importiere das CSS im `index.js`, damit die Styles verwendet werden
 - [ ] Aktiviere den `babel-loader` in der Webpack-Konfiguration, sodass unser JavaScript zu einer älteren Version transpiliert wird (schau Dir das generierte JavaScript am Schluss an)
 - [ ] Aktiviere Source-Maps, damit wir unsere originalen JavaScript-Dateien im Browser ansehen können (achte nach dem Aufstarten des Dev-Server, von welchen Dateien die `console.log()` ausgeführt werden)
-- [ ] Versuche, einen anderen Transpiler als Babel einzusetzen (z.B. [esbuild-loader](https://github.com/esbuild-kit/esbuild-loader#-install))
+- [ ] Versuche, einen anderen Transpiler als Babel einzusetzen (z.B. [esbuild-loader](https://github.com/privatenumber/esbuild-loader#-install))
 
 Zeit: ~ 10 min
 
@@ -298,7 +299,7 @@ a {
 
 ```scss
 /* SCSS */
-@mixin visuallyhidden() {
+@mixin visuallyhidden {
   border: 0;
   clip: rect(0 0 0 0);
   height: 1px;
@@ -455,11 +456,12 @@ a {
 
 ```css
 /* CSS */
-.message,
-.success,
-.error {
+.message, .error, .success {
   padding: 1em;
-  border: 1px solid #cccccc;
+  border: 1px solid #ccc;
+}
+
+.message, .error, .success {
   width: 100%;
   color: #333;
 }
@@ -586,7 +588,7 @@ a:focus {
 ### Partials/Imports
 
 Durch Partials kann eine Modularisierung erreicht werden. Man kann seine SCSS-Dateien aufteilen und sie nach Bedarf importieren.  
-Zum Beispiel ist es üblich, Mixins, Platzhalter und Variablen in separate Partials aufzuteilen.
+Zum Beispiel ist es üblich, **Mixins**, **Platzhalter** und **Variablen** in separate Partials aufzuteilen.
 
 ```sh
 /styles
@@ -639,7 +641,7 @@ Zum Beispiel ist es üblich, Mixins, Platzhalter und Variablen in separate Parti
 $baseFont: 16px;
 
 @function pxToRem($px, $ref: $baseFont) {
-  @return toRem(toPx($px) / toPx($ref));
+  @return toRem(calc(toPx($px) / toPx($ref)));
 }
 
 @function toRem($val) {
