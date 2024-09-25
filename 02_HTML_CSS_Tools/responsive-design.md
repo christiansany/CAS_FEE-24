@@ -315,7 +315,7 @@ _Beispiel: Chrome Dev-Tools_
 
 Öffne diese [**CodeSandbox**](https://q3i51.csb.app/) als Startpunkt.
 
-- [ ] Simuliere ein iPhone10
+- [ ] Simuliere ein iPhone14 Pro Max
 - [ ] Simuliere mit den Dev-Tools ein Pixelratio von mindestens 3.0, damit der Hintergrund der Website grün wird
 - [ ] Schalte ein, dass alle Media-Queries angezeigt werden
 
