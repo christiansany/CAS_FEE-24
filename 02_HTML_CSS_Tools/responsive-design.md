@@ -291,7 +291,7 @@ Dies ist zwar möglich, sollte aber trotzdem nicht verwendet werden. Jede verlin
 
 - [ ] Unter `30em` Breite, sollten alle Container untereinander sein
 - [ ] Ab `30em` und unter `50em` Breite, sollten die Navigation und die Sidebar jeweils `20%` Breite des Elternelements einnehmen
-- [ ] Ab `50em` Breite sollten di Navigation und die Sidebar jeweils `15%` Breite des Elternelementes einnehmen
+- [ ] Ab `50em` Breite sollten die Navigation und die Sidebar jeweils `15%` Breite des Elternelementes einnehmen
 - [ ] Der `.wrapper` sollte horizontal zentriert sein, sobald dieser seine `max-width` erreicht hat
 - [ ] Strukturiere dein CSS, sodass nur `(min-width: xxx)` media Queries genutzt werden
 
