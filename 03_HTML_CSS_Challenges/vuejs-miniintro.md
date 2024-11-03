@@ -16,353 +16,235 @@
 
 ## Quickstart
 
-Der einfachste Weg zum starten ist, Vue.js vom CDN einbinden und los gehts.
-
-```html
-<!-- Loading vue from a CDN -->
-<script src="https://unpkg.com/vue@next"></script>
-```
-
-**Example**
-
-```html
-<!DOCTYPE html>
-<html>
-<head>
-  <title>My first Vue app</title>
-  <script src="https://unpkg.com/vue@next"></script>
-</head>
-<body>
-  <div id="hello-vue">
-    {{ message }}
-  </div>
-
-  <script>
-    const HelloVueApp = {
-      data() {
-        return {
-          message: 'Hello Vue!!'
-        }
-      }
-    }
-
-    Vue.createApp(HelloVueApp).mount('#hello-vue')
-  </script>
-</body>
-</html>
-```
+Der einfachste Weg zum ausprobieren ist, [Vue.js](https://vuejs.org/) per [StackBlitz](https://vite.new/vue-ts) zu nutzen (nutzt [Vite](https://vite.dev/guide/)).  
+Als Alternative kann man auch einfach ein neues Projekt lokal aufsetzen mit [Vite](https://vite.dev/guide/).
 
 **Demo** 🤯
 
-TODO: Demo is broken an dmost likel won't work with the corrent CodeSandbox setup.
-- [Hello Vue!!](https://codesandbox.io/s/w2dm2)
-
-### Nutzung per npm
-
-Vue.js kann auch als npm-package genutzt werden. Dafür muss `npm install vue` ausgeführt werden, danach kann vue importiert werden.  
-Als Template verwenden wir das gleiche wie beim vorigen Beispiel.
-
-```js
-// main.js
-import Vue from 'vue';
-
-const HelloVueApp = {
-  data() {
-    return {
-      message: 'Hello Vue!!'
-    }
-  }
-}
-
-Vue.createApp(HelloVueApp).mount('#hello-vue')
-```
-
-TODO Add Demo
-TODO: Add Codesandbox
+- [Vue.js Demo](https://stackblitz.com/edit/vitejs-vite-v9sapd)
 
 ## Dekleratives Rendering
 
 Im Herzen von Vue ist ein System, welches das Deklarative Rendering ermöglicht. Wie im ersten Beispiel ersichtlich, ist die Template Syntax einfach zu verstehen.
-Dabei sind unsere variablen [**reactive**](https://v3.vuejs.org/guide/reactivity.html). Dies bedeutet, dass alle Änderungen an unserem internen state selbständig im DOM angepasst werden.
+Dabei sind unsere Variablen [**reactive**](https://vuejs.org/guide/extras/reactivity-in-depth.html). Dies bedeutet, dass alle Änderungen an unserem internen State selbständig im DOM angepasst werden.
 
-```html
-<!-- html -->
-<div id="counter">
-  Counter: {{ counter }}
-</div>
-```
+```vue
+<script setup lang="ts">
+import { ref } from 'vue';
 
-```js
-// js
-const Counter = {
-  data() {
-    return {
-      counter: 0
-    }
-  },
-  mounted() {
-    setInterval(() => {
-      this.counter++
-    }, 1000)
-  }
-}
+const counter = ref(0);
 
-Vue.createApp(Counter).mount('#counter')
+setInterval(() => {
+  // No setState needed, we can directly manipulate the value and Vue will update the DOM
+  counter.value++;
+}, 1000);
+</script>
+
+<template>
+  <p>Counter: {{ counter }}</p>
+</template>
 ```
 
 **Demo** 🤯
 
-- TODO: Demo is broken
-- [Dekleratives Rendering & Lifecycle hooks](https://codesandbox.io/s/4ff92)
+- [Dekleratives Rendering](https://stackblitz.com/edit/vitejs-vite-iowb8f)
 
-In dem Beispiel wird das DOM jede Sekunde mit dem neuen counter updated.  
-Hier seht ihr eine der [Lifecycle hooks](https://v3.vuejs.org/api/options-lifecycle-hooks.html) `mounted()`. Diese sind ähnlich wie z.B. `componendDidMount()` in React und können genutzt werden um einen Code auszuführen, wenn eine Instanz dieser Vue-Komponente den angegebenen Lebenszyklus durchläuft.
+Im Beispiel nutzen wir [`ref`](https://vuejs.org/api/reactivity-core.html#ref), um eine Referenz zu erstellen. Dies ist notwendig, damit Vue weiss, dass sich der Wert geändert hat und das DOM aktualisiert werden muss. Bei React kann man dies als eine Kombination von `useState` und `useRef` sehen.
 
-Zudem können wir auch unseren State auf den Attribut eines Elementes binden. Dies erreichen wir mit der `v-bind` [Directive](https://v3.vuejs.org/api/directives.html). Dies gibt es auch als Kurzversion indem wir einfach nur `:` verwenden. Zu beachten ist, sobald wir eine Directive nutzen (generell immer `v-something`), schreiben wir JavaScript innerhalb der `""`.
+Vue nutzt sogenannte [Singe-File Components (SFC)](https://vuejs.org/guide/scaling-up/sfc.html). Diese bestehen aus drei Teilen:
+1. **Script**: JavaScript-Code
+2. **Template**: HTML-Code
+3. **Style**: CSS-Code
 
-```html
-<!-- html -->
-<div id="bind-attribute">
+## Directives
+
+In Vue gibt es sogenannte [Directives](https://vuejs.org/api/built-in-directives.html). Diese sind spezielle Attribute, die wir in unserem HTML-Code verwenden können. Sie beginnen immer mit `v-`, aber für ein paar gibt es auch shorthands. Wer bereits mit Angular gearbeitet hat, wird sich hier wiederfinden.
+
+So kann man z.B. mit der [`v-bind` Directive](https://vuejs.org/api/built-in-directives.html#v-bind) variablen an Attribute knüpfen/übergeben.
+
+```vue
+<script setup lang="ts">
+const message = 'Hello World';
+</script>
+
+<template>
   <p v-bind:title="message">
     Hover your mouse over me for a few seconds to see my dynamically bound
     title!
   </p>
-  <br>Same same
+  <br />Same same
   <p :title="message">
     Hover your mouse over me for a few seconds to see my dynamically bound
     title!
   </p>
-  <br>Stringinterpolation
-  <p :title="'Hello,' + message">
+  <br />Stringinterpolation
+  <p :title="'Hello, ' + message">
     Hover your mouse over me for a few seconds to see my dynamically bound
     title!
   </p>
-</div>
-```
-
-```js
-// js
-const AttributeBinding = {
-  data() {
-    return {
-      message: 'You loaded this page on ' + new Date().toLocaleString()
-    }
-  }
-}
-
-Vue.createApp(AttributeBinding).mount('#bind-attribute')
+</template>
 ```
 
 **Demo** 🤯
 
-- [Binding Attributes](https://codesandbox.io/s/0vjfj)
+- [Binding Attributes](https://stackblitz.com/edit/vitejs-vite-rwrqrm?file=src%2FApp.vue)
 
 **Hilfreiche Links**
 
-* [Reactivity in Depth 🔥](https://v3.vuejs.org/guide/reactivity.html)
-* [Declerative Rendering](https://v3.vuejs.org/guide/introduction.html#declarative-rendering)
+* [Reactivity in Depth 🔥](https://vuejs.org/guide/extras/reactivity-in-depth.html)
 
 ## User Input
 
-Die Events, die von unserem UI abgeschossen werden, können mit der `v-on` [Directive](https://v3.vuejs.org/api/directives.html) abgefangen werden.  
+Die Events, die von unserem UI abgeschossen werden, können mit der `v-on` [Directive](https://vuejs.org/api/built-in-directives.html#v-on) abgefangen werden.  
 Auch hier gibt es eine gekürzte Version mit `@`.
 
-Im folgenden Beispiel ist zu sehen wie wir einen Counter über einen Button hochzählen. Dabei ist auch das neue `methods`-Objekt zu sehen. Dieses beinhaltet unsere **Methoden**, welche wir von anderen Methoden, unseren Lifecycle hooks oder auch von unserem Template aus ausrufen können.
+```vue
+<script setup lang="ts">
+import { ref } from 'vue';
 
-```html
-<!-- html -->
-<div id="event-handling">
-  {{ counter }}
-  <button v-on:click="increment">Increment</button>
-  Same same
-  <button @click="increment">Increment</button>
-</div>
+const counter = ref(0);
+
+const increment = () => {
+  counter.value++;
+};
+</script>
+
+<template>
+  <button @click="increment">Add 1</button>
+  <p>Count is: {{ counter }}</p>
+</template>
 ```
 
-```js
-// js
-const EventHandling = {
-  data() {
-    return {
-      counter: 0
-    }
-  },
-  methods: {
-    increment() {
-      this.counter++;
-    }
-  }
-}
-
-Vue.createApp(EventHandling).mount('#event-handling')
-```
+Hier sind ebenfalls die Ähnlichkeiten mit React zu erkennen.
 
 **Demo** 🤯
 
-- [Eventhandling](https://codesandbox.io/s/lvhlp)
+- [Eventhandling](https://stackblitz.com/edit/vitejs-vite-pbpnkk?file=src%2FApp.vue)
 
 ### Two-Way Databinding
 
-Mit der `v-model` Directive können wir unseren State von den Komponenten direkt durch das UI manipulieren.
+Mit der `v-model` [Directive](https://vuejs.org/api/built-in-directives.html#v-model) können wir unseren State von den Komponenten direkt durch das UI manipulieren.
 
-```html
-<!-- html -->
-<div id="two-way-binding">
-  <p>{{ message }}</p>
+```vue
+<script setup lang="ts">
+import { ref } from 'vue';
+const message = ref();
+</script>
+
+<template>
+  <p>Message: {{ message }}</p>
   <input v-model="message" />
-</div>
-```
-
-```js
-// js
-const TwoWayBinding = {
-  data() {
-    return {
-      message: 'Hello Vue!'
-    }
-  }
-}
-
-Vue.createApp(TwoWayBinding).mount('#two-way-binding')
+</template>
 ```
 
 **Demo** 🤯
 
-- [Two-Way Databinding](https://codesandbox.io/s/gfdjz)
+- [Two-Way Databinding](https://stackblitz.com/edit/vitejs-vite-8skfd5?file=src%2FApp.vue)
 
 ## Conditionals and Loops
 
 ### Konditionales Rendering
 
-Konditionales Rendering ist sehr einfach zu implementieren mit der `v-if` Directive. Diese kann ebenfalls mit [`v-else-if`](https://v3.vuejs.org/api/directives.html#v-else-if) und/oder `v-else` kombiniert werden. Bei der Verwendung dieser Directives wird das ELement aus dem DOM entfernt, solange es nicht angezeigt wird.  
-Mit der `v-show` Directive kann ein Element mit `display: none;` lediglich ausgeblendet werden. Somit bleibt es im DOM vorhanden.
+Konditionales Rendering ist sehr einfach zu implementieren mit der [`v-if`](https://vuejs.org/api/built-in-directives.html#v-if) Directive. Diese kann ebenfalls mit [`v-else-if`](https://vuejs.org/api/built-in-directives.html#v-else-if) und/oder [`v-else`](https://vuejs.org/api/built-in-directives.html#v-else) kombiniert werden. Bei der Verwendung dieser Directives wird das Element aus dem DOM entfernt, solange es nicht angezeigt wird.  
+Mit der [`v-show`](https://vuejs.org/guide/essentials/conditional.html#v-show) Directive kann ein Element mit `display: none;` lediglich ausgeblendet werden. Somit bleibt es im DOM vorhanden.
 
-Die Elemente die dabei angezeigt bzw. ausgeblendet werden, können dazu animiert werden. Siehe dafür die Dokumentation für die [Transitions](https://v3.vuejs.org/guide/transitions-enterleave.html).
+Die Elemente die dabei angezeigt bzw. ausgeblendet werden, können dazu animiert werden. Siehe dafür die Dokumentation für die [Transitions](https://vuejs.org/guide/built-ins/transition.html#transition).
 
-```html
-<!-- html -->
-<div id="conditional-rendering">
-  <span v-if="showText">Hello there</span>
+```vue
+<script setup lang="ts">
+import { ref } from 'vue';
+const showText = ref(false);
+</script>
+
+<template>
   <button @click="showText = !showText">Toggle Text</button>
-</div>
-```
+  <p v-if="showText">Hello there</p>
+</template>
 
-```js
-// js
-const ConditionalRendering = {
-  data() {
-    return {
-      showText: true
-    }
-  }
-}
-
-Vue.createApp(ConditionalRendering).mount('#conditional-rendering')
 ```
 
 **Demo** 🤯
 
-- [Konditionales Rendering](https://codesandbox.io/s/zz0ju)
+- [Konditionales Rendering](https://stackblitz.com/edit/vitejs-vite-rxlwxz?file=src%2FApp.vue)
 
 ### Loops
 
-Mit der `v-for` Directive können wir durch Arrays oder auch Objekte loopen. Dabei wir die Direktive auf dem Element angebracht, welches wiederholt werden soll.  
-Mehr zum Rendering von Listen findest Du [hier](https://v3.vuejs.org/guide/list.html).
+Mit der [`v-for`](https://vuejs.org/api/built-in-directives.html#v-for) Directive können wir durch Arrays oder auch Objekte loopen. Dabei wir die Direktive auf dem Element angebracht, welches wiederholt werden soll.  
+Mehr zum Rendering von Listen findest Du [hier](https://vuejs.org/guide/essentials/list.html).
 
-```html
-<!-- html -->
-<div id="list-rendering">
+```vue
+<script setup lang="ts">
+const todos = [
+  { text: 'Learn JavaScript' },
+  { text: 'Learn Vue' },
+  { text: 'Build something awesome' },
+];
+</script>
+
+<template>
   <ol>
     <li v-for="todo in todos">
       {{ todo.text }}
     </li>
   </ol>
-</div>
-```
-
-```js
-// js
-const ListRendering = {
-  data() {
-    return {
-      todos: [
-        { text: 'Learn JavaScript' },
-        { text: 'Learn Vue' },
-        { text: 'Build something awesome' }
-      ]
-    }
-  }
-}
-
-Vue.createApp(ListRendering).mount('#list-rendering')
+</template>
 ```
 
 **Demo** 🤯
 
-- [Loops](https://codesandbox.io/s/lqg1o)
+- [Loops](https://stackblitz.com/edit/vitejs-vite-pdmxde?file=src%2FApp.vue)
 
 ## Components
 
 Vue.js ist gleich wie andere MV*-Frameworks aufgebaut, so dass man sein Widget/Webapp oder ähnliches in verschiedenen Komponenten aufsplitten kann. Diese können ebenfalls ineinander verschachtelt werden.  
-Das Registrieren von Komponenten ist einfach. Wir erstellen unsere Komponenten und registrieren diese in unserer App-Instanz oder in anderen Komponenten. Das Registrieren wird über den `components` Key gemacht.
+Dabei verhält sich Vue.js wiederum sehr ähnlich zu React. Wir können also einfach Komponenten definieren und diese in anderen Komponenten verwenden.
 
-```html
-<!-- html -->
-<div id="app">
-  <ul>
-    <!-- Create an instance of the todo-item component -->
-    <todo-item></todo-item>
-  </ul>
-</div>
+```vue
+<!-- EchoMessage.vue -->
+<script setup lang="ts">
+// defineProps is a helper function that defines props for the component
+// https://vuejs.org/api/sfc-script-setup.html#defineprops-defineemits
+const { message } = defineProps({
+  message: String,
+});
+</script>
+
+<template>
+  <p>{{ message }}</p>
+</template>
 ```
 
-```js
-// js
-const IconHot = {
-  template: `🔥`
-}
+```vue
+<!-- App.vue -->
+<script setup lang="ts">
+import EchoMessage from './components/EchoMessage.vue';
+const msg = 'Message from child 2';
+</script>
 
-const TodoItem = {
-  template: `<li>This is a todo <icon-hot></icon-hot></li>`,
-  components: {
-    IconHot, // Register a new component
-  },
-}
-
-// Create Vue application
-const app = Vue.createApp({
-  components: {
-    TodoItem, // Register a new component
-  },
-  // ... Other properties for the component
-})
-
-// Mount Vue application
-app.mount("#app")
+<template>
+  <h1>Hello World</h1>
+  <EchoMessage message="Message from child 1" />
+  <EchoMessage :message="msg" />
+</template>
 ```
 
 **Demo** 🤯
 
-- [Components](https://codesandbox.io/s/erk82)
+- [Components](https://stackblitz.com/edit/vitejs-vite-2jl5ef?file=src%2Fcomponents%2FEchoMessage.vue,src%2FApp.vue)
 
 ### Practice 🔥
 
-Öffne diese [**CodeSandbox**](https://codesandbox.io/s/uhkgt) als Startpunkt.
+Öffne diesen [**StackBlitz**](https://stackblitz.com/edit/vitejs-vite-bn7xjw?file=src%2FApp.vue) als Startpunkt.
 
 Füge die fehlende Funktionalität hinzu, damit unsere Todo-App deployt werden kann.
  
 Zeit: ~ 15 min
 
-**Solution**: [https://codesandbox.io/s/g5br9](https://codesandbox.io/s/g5br9)
-
-## Vorteile von Vue.js
-
-Einer der grössten Vorteile von Vue.js gegenüber React ist, dass Vue.js auch ein bestehendes Template in eine Vue-Instanz umwandeln kann. Somit kann z.B. alles relevante HTML, welches für SEO genützt wurde, bereits von einem Server gerendert werden, ohne dass wir Vue.js auf dem Server ausführen müssen. Dies hatten wir bei der Navigation von [css.ch](https://css.ch) zu unserem Vorteil genutzt. Somit konnten wir alle SEO-Anforderungen erfüllen, konnten jedoch alle JS-Funktionalität, welche die Navigation benötigt, mit Vue abwickeln. Wenn man den Source-Code von css.ch ansieht, ist dies gut ersichtlich.
+**Solution**: [https://stackblitz.com/edit/vitejs-vite-ryxwzs](https://stackblitz.com/edit/vitejs-vite-ryxwzs?file=src%2FApp.vue)
 
 ## Weiterführende Themen
 
-* [Getting started Guide](https://v3.vuejs.org/guide/introduction.html)
-* [Composing with Components](https://v3.vuejs.org/guide/introduction.html#composing-with-components)
-* [Single File Components 🔥](https://v3.vuejs.org/guide/single-file-component.html)
-* [Composition API 🔥](https://v3.vuejs.org/guide/composition-api-introduction.html)
-* [Vite - Next Generation Frontend Tooling 🔥](https://vitejs.dev/)
+* [Getting started Guide](https://vuejs.org/guide/introduction.html)
+* [Single File Components 🔥](https://vuejs.org/guide/scaling-up/sfc.html)
+* [Composition API 🔥](https://vuejs.org/guide/extras/composition-api-faq.html)
+* [Vite - Next Generation Frontend Tooling 🔥](https://vite.dev)
