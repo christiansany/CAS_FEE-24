@@ -51,7 +51,7 @@ function Example() {
     }, {
       kind: "link",
       text: "Details anzeigen",
-      href: "details"
+      href: "/details"
     }],
     closeOnItemClick: true,
   };
@@ -75,7 +75,36 @@ Der State ob das Menu offen ist oder geschlossen, wird von der `<Menu>`-Komponen
 1. Die Verantwortung für das Rendering aller Unterkomponenten ist in direkter Verantwortung vom `<Menu>`-Komponenten, welches die verschiedenen Komponenten sehr stark miteinender koppelt
 2. Die `props` werden durch mehrere Komponenten durchgereicht. Dies wird als "prop drilling" bezeichnet und gilt allgemein als "code smell"
 3. Wenn die Daten in einem anderen Format daherkommen, müssen diese zuerst auf die Struktur der Config gemappt werden
-TODO: Beispiel fürs mapping
+
+```jsx
+function Example() {
+  // Daten welche von einer API kommen oder als Props übergeben werden
+  const links = [
+    { title: "Details anzeigen", target: "/details" },
+    { title: "Profil anzeigen", target: "/profile" }
+  ];
+
+  const menuConfig = {
+    menuButton: {
+      text: "Menu",
+    },
+    menuList: [{
+      kind: "item",
+      text: "Download",
+      onClick: () => { /* ... */ }
+    }].concat(links.map(link => ({ // Daten müssen auf die Struktur der Config gemappt werden
+      kind: "link",
+      text: link.title,
+      href: link.target
+    })),
+    closeOnItemClick: true,
+  };
+
+  return (
+    <Menu {...menuConfig}> />
+  );
+}
+```
 
 ### Stateverwaltung selber übernehmen
 
@@ -96,12 +125,20 @@ function Example() {
     close();
   }
 
+  // Daten welche von einer API kommen oder als Props übergeben werden
+  const links = [
+    { title: "Details anzeigen", target: "/details" },
+    { title: "Profil anzeigen", target: "/profile" }
+  ];
+
   return (
     <Menu open={isOpen}>
       <MenuButton onClick={open}>Menu</MenuButton>
       <MenuList>
         <MenuItem onClick={download}>Download</MenuItem>
-        <MenuLink to="details" onClick={close}>Details anzeigen</MenuLink>
+        {links.map(link => (
+          <MenuLink to={link.target} onClick={close}>{link.title}</MenuLink>
+        ))}
       </MenuList>
     </Menu>
   );
@@ -114,7 +151,6 @@ In diesem Beispiel müssen wir zwar kein kompliziertes Konfigurationsobjekt erst
 
 1. Die Komponenten sind nicht mehr so eng gekoppelt und das `<Menu>` muss sich nicht mehr um das Rendering der Unterkomponenten kümmern
 2. Die Datenstruktur spielt keine Rolle mehr
-TODO: Beispiel für die Datenstruktur
 
 #### Cons
 
