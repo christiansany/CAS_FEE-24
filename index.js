@@ -31,42 +31,38 @@ const mdToPdfProxy = async (from, to) => {
   );
 
   // 02_HTML_CSS_Tools
-  // await mdToPdfProxy(
-  //   "./02_HTML_CSS_Tools/responsive-design.md",
-  //   "./02_HTML_CSS_Tools/dist/responsive-design.pdf"
-  // );
-  // await mdToPdfProxy(
-  //   "./02_HTML_CSS_Tools/tooling.md",
-  //   "./02_HTML_CSS_Tools/dist/tooling.pdf"
-  // );
-  // await mdToPdfProxy(
-  //   "./02_HTML_CSS_Tools/frontend-frameworks.md",
-  //   "./02_HTML_CSS_Tools/dist/frontend-frameworks.pdf"
-  // );
+  await mdToPdfProxy(
+    "./02_HTML_CSS_Tools/responsive-design.md",
+    "./02_HTML_CSS_Tools/dist/responsive-design.pdf"
+  );
+  await mdToPdfProxy(
+    "./02_HTML_CSS_Tools/tooling.md",
+    "./02_HTML_CSS_Tools/dist/tooling.pdf"
+  );
+  await mdToPdfProxy(
+    "./02_HTML_CSS_Tools/frontend-frameworks.md",
+    "./02_HTML_CSS_Tools/dist/frontend-frameworks.pdf"
+  );
 
   // 03_HTML_CSS_Challenges
-  // await mdToPdfProxy(
-  //   "./03_HTML_CSS_Challenges/js-architecture.md",
-  //   "./03_HTML_CSS_Challenges/dist/js-architecture.pdf"
-  // );
-  // await mdToPdfProxy(
-  //   "./03_HTML_CSS_Challenges/images.md",
-  //   "./03_HTML_CSS_Challenges/dist/images.pdf"
-  // );
-  // await mdToPdfProxy(
-  //   "./03_HTML_CSS_Challenges/vuejs-miniintro.md",
-  //   "./03_HTML_CSS_Challenges/dist/vuejs-miniintro.pdf"
-  // );
-  // await mdToPdfProxy(
-  //   "./03_HTML_CSS_Challenges/vue-compound-components.md",
-  //   "./03_HTML_CSS_Challenges/dist/vue-compound-components.pdf"
-  // );
-  // await mdToPdfProxy(
-  //   "./03_HTML_CSS_Challenges/react-compound-components.md",
-  //   "./03_HTML_CSS_Challenges/dist/react-compound-components.pdf"
-  // );
-  // await mdToPdfProxy(
-  //   "./03_HTML_CSS_Challenges/loadingbehaviours.md",
-  //   "./03_HTML_CSS_Challenges/dist/loadingbehaviours.pdf"
-  // );
+  await mdToPdfProxy(
+    "./03_HTML_CSS_Challenges/images.md",
+    "./03_HTML_CSS_Challenges/dist/images.pdf"
+  );
+  await mdToPdfProxy(
+    "./03_HTML_CSS_Challenges/vuejs-miniintro.md",
+    "./03_HTML_CSS_Challenges/dist/vuejs-miniintro.pdf"
+  );
+  await mdToPdfProxy(
+    "./03_HTML_CSS_Challenges/vue-compound-components.md",
+    "./03_HTML_CSS_Challenges/dist/vue-compound-components.pdf"
+  );
+  await mdToPdfProxy(
+    "./03_HTML_CSS_Challenges/react-compound-components.md",
+    "./03_HTML_CSS_Challenges/dist/react-compound-components.pdf"
+  );
+  await mdToPdfProxy(
+    "./03_HTML_CSS_Challenges/loadingbehaviours.md",
+    "./03_HTML_CSS_Challenges/dist/loadingbehaviours.pdf"
+  );
 })();
