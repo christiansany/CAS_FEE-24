@@ -292,7 +292,7 @@ sizes="(min-width: 1441px) calc((1440px - 2 * 128px + 16px) * (3/12) - 16px)"
 
 **Innerhalb des Grid ist eine Berechnung der sizes nicht immer einfach.** Dafür haben wir deshalb einen **Helper** erstellt, womit wir einfach die Spaltenbreite des Bildes angeben können, und der helper gibt uns dann die richtigen `sizes` zurück.  
 
-```ts
+```typescript
 // 🌈 Neues Code-Beispiel da das alte obsolete war
 export type BreakpointName = "large" | "medium" | "small";
 
