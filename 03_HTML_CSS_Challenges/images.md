@@ -292,328 +292,125 @@ sizes="(min-width: 1441px) calc((1440px - 2 * 128px + 16px) * (3/12) - 16px)"
 
 **Innerhalb des Grid ist eine Berechnung der sizes nicht immer einfach.** Dafür haben wir deshalb einen **Helper** erstellt, womit wir einfach die Spaltenbreite des Bildes angeben können, und der helper gibt uns dann die richtigen `sizes` zurück.  
 
-Damit das Backend schlussendlich die gleichen `sizes` ins produktive HTML schreiben kann, mussten sie diesen Helper ebenfalls implementieren.
-
 ```js
-/* Helper wird in unserer Frontend Preview genutzt */
-const _ = require('lodash');
+// 🌈 Neues Code-Beispiel da das alte obsolete war
+export type BreakpointName = "large" | "medium" | "small";
 
-// Breakpoints is in json format to be consumed by BE
-const breakpoints = require('./breakpoints.json');
+export type Breakpoint = {
+  readonly name: BreakpointName;
+  readonly width: string;
+  readonly containerPadding: string;
+  readonly gutter: string;
+};
 
-/**
- * widthCalc
- * @param {String} width
- * @param {String} containerPadding
- * @param {String} gutter
- * @param {String|Integer} columns
- * @param {undefined|Integer} fixGutter
- * @return {String}
- */
-const widthCalc = (width, containerPadding, gutter, columns, fixGutter) => {
+const breakpoints: Breakpoint[] = [
+  {
+    name: "large",
+    width: "1000px",
+    containerPadding: "64px",
+    gutter: "16px",
+  },
+  {
+    name: "medium",
+    width: "440px",
+    containerPadding: "32px",
+    gutter: "16px",
+  },
+  {
+    name: "small",
+    width: "0px",
+    containerPadding: "16px",
+    gutter: "16px",
+  },
+];
+
+export const getBreakpointByName = (name: BreakpointName): Breakpoint => {
+  const breakpoint = breakpoints.find((breakpoint) => breakpoint.name === name);
+  if (!breakpoint) {
+    throw new Error("Given BreakpointName was not found");
+  }
+  return breakpoint;
+};
+
+const widthCalc = (
+  width: string,
+  containerPadding: string,
+  gutter: string,
+  columns: number,
+  fixGutter?: number
+) => {
   let calc = `calc((${width} - 2 * ${containerPadding} + ${gutter}) * (${columns}/12) - ${gutter})`;
 
   if (fixGutter) {
-    calc = `calc(((${width} - 2 * ${containerPadding} + ${gutter}) * (${columns}/12) - ${gutter}) - ${fixGutter * 2}px)`;
+    calc = `calc(((${width} - 2 * ${containerPadding} + ${gutter}) * (${columns}/12) - ${gutter}) - ${
+      fixGutter * 2
+    }px)`;
   }
 
   return calc;
 };
 
-/**
- * mapImageSizesToColumns
- * @param {Object} sizes
- * @return {String}
- */
-const mapImageSizesToColumns = (sizes) => {
-  const cloned = _.cloneDeep(breakpoints);
-  const imageSizes = Object.entries(sizes);
-
-  imageSizes.forEach((el) => {
-    const [, imageSizesValue] = el;
-
-    if (_.isObject(imageSizesValue)) {
-      el.pop();
-      Object.values(imageSizesValue).forEach(element => el.push(element));
-    }
-  });
-
-  return imageSizes.map(([breakpoint, columns, fixGutter], index, arr) => {
-    const breakpointObject = cloned.find(bp => bp.breakpoint === breakpoint);
-
-    if (breakpoint === 'xxl') {
-      // xxl always 1440px as a base width
-      return `(min-width: ${breakpointObject.width}) ${widthCalc('1440px', breakpointObject.containerPadding, breakpointObject.gutter, columns, fixGutter)}`;
-    } else if (index + 1 === arr.length) {
-      // Last entry should not have a media query
-      return widthCalc('100vw', breakpointObject.containerPadding, breakpointObject.gutter, columns, fixGutter);
-    }
-    // Default has media-query and 100vw as base width
-    return `(min-width: ${breakpointObject.width}) ${widthCalc('100vw', breakpointObject.containerPadding, breakpointObject.gutter, columns, fixGutter)}`;
-  }).toString();
+export const mapImageSizesToColumns = (
+  configs: { name: BreakpointName; columns: number }[]
+): string => {
+  return configs
+    .map((config, index) => {
+      const breakpoint = getBreakpointByName(config.name);
+      if (breakpoint) {
+        if (breakpoint.name === "large") {
+          // "large" is the largest breakpoint and should not use 100vw as calc base
+          return `(min-width: ${breakpoint.width}) ${widthCalc(
+            "1000px",
+            breakpoint.containerPadding,
+            breakpoint.gutter,
+            config.columns,
+            undefined
+          )}`;
+        } else if (
+          breakpoint.name === "small" ||
+          configs.length === index + 1
+        ) {
+          // "small" is the smallest breakpoint and should not have a media query
+          return widthCalc(
+            "100vw",
+            breakpoint.containerPadding,
+            breakpoint.gutter,
+            config.columns,
+            undefined
+          );
+        }
+        // Default has media-query and 100vw as base width
+        return `(min-width: ${breakpoint.width}) ${widthCalc(
+          "100vw",
+          breakpoint.containerPadding,
+          breakpoint.gutter,
+          config.columns,
+          undefined
+        )}`;
+      }
+    })
+    .join(",");
 };
-
-module.exports = mapImageSizesToColumns;
 ```
 
-<details>
-  <summary>breakpoints.json</summary>
+**Example**
+  
+```ts
+const sizes = mapImageSizesToColumns([
+  { name: "large", columns: 4 },
+  { name: "medium", columns: 6 },
+  { name: "small", columns: 12 },
+]);
 
-```json
-[
-  {
-    "breakpoint": "xxl",
-    "width": "1441px",
-    "containerPadding": "128px",
-    "gutter": "16px"
-  },
-  {
-    "breakpoint": "xl",
-    "width": "1280px",
-    "containerPadding": "128px",
-    "gutter": "16px"
-  },
-  {
-    "breakpoint": "lg",
-    "width": "1024px",
-    "containerPadding": "40px",
-    "gutter": "16px"
-  },
-  {
-    "breakpoint": "md",
-    "width": "780px",
-    "containerPadding": "32px",
-    "gutter": "16px"
-  },
-  {
-    "breakpoint": "rg",
-    "width": "600px",
-    "containerPadding": "32px",
-    "gutter": "16px"
-  },
-  {
-    "breakpoint": "sm",
-    "width": "400px",
-    "containerPadding": "16px",
-    "gutter": "12px"
-  },
-  {
-    "breakpoint": "xs",
-    "width": "0px",
-    "containerPadding": "12px",
-    "gutter": "12px"
-  }
-]
+// sizes
+// (min-width: 1000px) calc((1000px - 2 * 64px + 16px) * (4/12) - 16px),
+// (min-width: 440px) calc((100vw - 2 * 32px + 16px) * (6/12) - 16px),
+// calc((100vw - 2 * 16px + 16px) * (12/12) - 16px)
 ```
-</details>
-
-Als Template-Engine für unsere Preview hatten wir Handlebars verwendet. Dies ermöglicht es uns, die Imagekomponente einmal zu schreiben und in diversen anderen Komponenten/Modulen wieder und wieder zu nutzen.
-
-**Template (Handlebars)**
-
-```hbs
-<span class="ppm-image{{#each classes}} {{this}}{{/each}}"{{#if lazy}} data-init="image"{{/if}}>
-  {{#if lazy}}
-    <span class="ppm-image__loader"></span>
-  {{/if}}
-  {{#if picture}}
-    <picture>
-      {{#each sources}}
-        <source srcset="{{srcset}}"
-          {{#if dataSrcset}} data-srcset="{{dataSrcset}}"{{/if}}
-          {{#if type}} type="{{type}}"{{/if}}
-          {{#if media}} media="{{media}}"{{/if}}
-          {{#if sizes}} sizes="{{sizes}}"{{/if}}>
-      {{/each}}
-      <img
-        class="ppm-image__image{{#if focusPoint}} ppm-image__image--{{focusPoint}}{{/if}}"
-        {{#if lazy}} data-image="image"{{/if}}
-        src="{{ src }}"
-        {{#if dataSrc}} data-src="{{dataSrc}}"{{/if}}
-        alt="{{ alt }}">
-    </picture>
-  {{else}}
-    <img
-      class="ppm-image__image{{#if focusPoint}} ppm-image__image--{{focusPoint}}{{/if}}"
-      {{#if lazy}} data-image="image"{{/if}}
-      src="{{ src }}"
-      {{#if dataSrc}} data-src="{{dataSrc}}"{{/if}}
-      {{#if srcset}} srcset="{{srcset}}"{{/if}}
-      {{#if dataSrcset}} data-srcset="{{dataSrcset}}"{{/if}}
-      {{#if sizes}} sizes="{{sizes}}"{{/if}}
-      alt="{{ alt }}">
-  {{/if}}
-</span>
-```
-
-Dem Template kann dann folgende Beispielspayload übergeben werden um den daruaffolgenden Output zu generieren.
-
-**Config**
-
-```js
-{
-  classes: ['ppm-hero__image', 'ppm-hero__image--with-eyecatcher'],
-  lazy: true,
-  src: base64gif,
-  dataSrc: 'https://picsum.photos/g/1600/900',
-  alt: 'Custom alt text',
-  picture: true,
-  sources: [
-    {
-      srcset: `${base64gif} 1w`,
-      dataSrcset: `
-        https://picsum.photos/g/400/225 400w,
-        https://picsum.photos/g/600/338 600w,
-        https://picsum.photos/g/800/450 800w,
-        https://picsum.photos/g/1200/675 1200w,
-        https://picsum.photos/g/1600/900 1600w
-      `,
-      media: '(min-width: 400px)',
-      sizes: mapImageSizesToColumns({
-        xxl: 12,
-        xl: 12,
-        lg: 12,
-        md: 12,
-        rg: 12,
-        sm: 12,
-      }),
-      type: 'image/jpeg',
-    },
-    {
-      srcset: `${base64gif} 1w`,
-      dataSrcset: `
-        https://picsum.photos/g/300 300w,
-        https://picsum.photos/g/400 400w,
-        https://picsum.photos/g/600 600w,
-        https://picsum.photos/g/800 800w
-      `,
-      media: '',
-      sizes: mapImageSizesToColumns({
-        xs: 12,
-      }),
-      type: 'image/jpeg',
-    },
-  ],
-}
-```
-
-**Output**
-```html
-<span class="ppm-image ppm-hero__image ppm-hero__image--with-eyecatcher" data-init="image">
-  <span class="ppm-image__loader"></span>
-  <picture>
-    <!-- Seitenverhältnis 16:9 -->
-    <source
-      srcset="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7 1w" 
-      data-srcset="
-        https://picsum.photos/g/400/225 400w,
-        https://picsum.photos/g/600/338 600w,
-        https://picsum.photos/g/800/450 800w,
-        https://picsum.photos/g/1200/675 1200w,
-        https://picsum.photos/g/1600/900 1600w
-      "
-      type="image/jpeg"
-      media="(min-width: 400px)"
-      sizes="
-        (min-width: 1441px) calc((1440px - 2 * 128px + 16px) * (12/12) - 16px),
-        (min-width: 1280px) calc((100vw - 2 * 128px + 16px) * (12/12) - 16px),
-        (min-width: 1024px) calc((100vw - 2 * 40px + 16px) * (12/12) - 16px),
-        (min-width: 780px) calc((100vw - 2 * 32px + 16px) * (12/12) - 16px),
-        (min-width: 600px) calc((100vw - 2 * 32px + 16px) * (12/12) - 16px),
-        calc((100vw - 2 * 16px + 12px) * (12/12) - 12px)
-      "
-    >
-    <!-- Seitenverhältnis 1:1 -->
-    <source
-      srcset="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7 1w" 
-      data-srcset="https://picsum.photos/g/300 300w,
-        https://picsum.photos/g/400 400w,
-        https://picsum.photos/g/600 600w,
-        https://picsum.photos/g/800 800w
-      "
-      type="image/jpeg"
-      sizes="calc((100vw - 2 * 12px + 12px) * (12/12) - 12px)"
-    >
-    <img class="ppm-image__image" data-image="image" 
-      src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
-      data-src="https://picsum.photos/g/1600/900"
-      alt="Custom alt text"
-    >
-  </picture>
-</span>
-```
-
-<details>
-  <summary>Example: Avatar</summary>
-
-Wenn das Aspect-Ratio des Bildes nicht ändert, müssen wir kein `<picture>`-Element benutzen.
-
-**Config**
-
-```js
-{
-  classes: [],
-  lazy: true,
-  src: base64gif,
-  dataSrc: 'https://picsum.photos/g/60',
-  srcset: `${base64gif} 1w`
-  dataSrcset: `
-    https://picsum.photos/g/40 40w,
-    https://picsum.photos/g/60 60w,
-    https://picsum.photos/g/80 80w,
-    https://picsum.photos/g/100 100w,
-    https://picsum.photos/g/120 120w
-  `,
-  sizes: mapImageSizesToColumns({
-    rg: '60px',
-    xs: '40px'
-  }),
-  alt: 'Custom alt text',
-}
-```
-
-**Output**
-
-```html
-<span class="ppm-image ppm-image--fixed-demo" data-init="image">
-  <span class="ppm-image__loader"></span>
-  <img class="ppm-image__image"
-    data-image="image"
-    src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
-    data-src="https://picsum.photos/g/60"
-    srcset="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7 1w"
-    data-srcset="
-      https://picsum.photos/g/40 40w,
-      https://picsum.photos/g/60 60w,
-      https://picsum.photos/g/80 80w,
-      https://picsum.photos/g/100 100w,
-      https://picsum.photos/g/120 120w
-    "
-    sizes="(min-width: 600px) 60px, 40px"
-    alt="Demo alt-text">
-</span>
-```
-</details>
-
-### Layzloading
-
-> Dieses Lazyloading wurde im 2019 entwickelt, heutzutage haben wir mit `loading="lazy"` ein sehr einfache API, die wir nutzen können um Bilder lazy zu laden.  
-> Siehe dazu auch [Browser-level image lazy loading for the web](https://web.dev/browser-level-image-lazy-loading/)
-
-Lazyloading ermöglich es uns, dass die Bilder nur dann geladen werden, wenn diese auf wirklich benötigt werden.  
-Wenn z.B. ein Bild ausserhalb des Viewports ist, sollte es nicht geladen werden.
-
-Dafür verwenden wir den [`IntersectionObserver`](https://developer.mozilla.org/en-US/docs/Web/API/Intersection_Observer_API). Beim Pageload registrieren wir die Bildelemente in einer IntersectionObserver Instanz, und dieser lässt uns ein Callback definieren, wenn das Bild in die Nähe des Viewports kommt.
-
-Damit die Bilder nicht bereits beim pageload geladen werden, setzen wir initial im `src`- & `srcset`-Attribut ein base64 encoded 1x1 transparent gif. Die richtigen `src`- & `srcset`-Attribut schreiben wir zuerst auf `data-src` & `data-srcset`, und erst wenn die Bilder geladen werden sollen, schreiben wir diese auf die `src`- & `srcset`-Attribute.
-
-**Hilfreiche Links**
-
-* [Alternatives Package lazysizes](https://www.npmjs.com/package/lazysizes)
-* [Progressive Enhancement: loading="lazy"](https://web.dev/browser-level-image-lazy-loading/)
 
 **Demo** 🤯
 
+- [🌟 React Demo]( https://codesandbox.io/p/sandbox/n8mczn?file=%2Fsrc%2FApp.tsx)
 - [Playground Demo](https://codesandbox.io/s/o04l7)
 - [Live Demo post.ch](https://www.post.ch)
 - [Live Demo css.ch](https://www.css.ch)
